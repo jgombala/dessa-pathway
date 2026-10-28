@@ -133,6 +133,18 @@ h1 { font-family: var(--font-display); font-size: 26px; line-height: 1.2; font-w
 .explain { background: var(--ink); color: var(--on-ink); border-radius: 14px; padding: 10px 14px; font-size: 15px; margin-top: 2px; }
 .explain small { color: var(--amber); display: block; }
 
+/* narration (Rose's view) */
+.narr { background: var(--ink); color: var(--on-ink); border-radius: 22px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.narr .row { gap: 14px; }
+.play { width: 56px; height: 56px; flex: none; border-radius: 50%; background: var(--accent); color: #fff; display: grid; place-items: center; }
+.narr b { font-size: 17px; display: block; }
+.narr small { color: var(--mist); font-size: 14px; }
+.bar { height: 6px; border-radius: 3px; background: var(--mist); opacity: .45; overflow: hidden; }
+.bar i { display: block; height: 100%; width: 0; background: var(--amber); }
+.narr .cap { font-size: 17px; line-height: 1.5; color: var(--on-ink); }
+.narr .cap span { color: var(--mist); }
+.narr .cap span.on { color: var(--on-ink); font-weight: 800; }
+
 /* tab bar */
 .tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--surface); border-top: 1px solid var(--line); padding: 6px 8px 8px; }
 .tabs button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 4px; min-height: 56px; font-size: 12px; font-weight: 800; color: var(--faint); border-radius: 14px; }
@@ -165,6 +177,14 @@ h1 { font-family: var(--font-display); font-size: 26px; line-height: 1.2; font-w
         <p class="eyebrow" id="m-eyebrow">Tue, Oct 28 · 7:30 AM</p>
         <h1 id="h-morning">Good morning, Dana. Two things for your mom today.</h1>
       </div>
+      <section class="narr" id="narr" aria-label="Dessa reads your morning" hidden>
+        <div class="row">
+          <button class="play" id="play" aria-label="Play morning message"><svg id="ic-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><svg id="ic-pause" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" hidden><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
+          <div class="grow"><b>Hear your morning</b><small>Dessa reads it to you · 25 sec</small></div>
+        </div>
+        <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+        <p class="cap" id="cap"></p>
+      </section>
       <div id="m-new"></div>
       <article class="card">
         <div class="row"><span class="num">1</span><div class="grow"><h3>Heart doctor, Thursday 2:00</h3><p>I added her new water pill to the questions list.</p></div></div>
@@ -274,6 +294,7 @@ h1 { font-family: var(--font-display); font-size: 26px; line-height: 1.2; font-w
       $('#t-' + s).setAttribute('aria-selected', s === name ? 'true' : 'false');
     });
     $('#main').scrollTop = 0;
+    if (name !== 'morning') stopNarr();
     if (name === 'listen') startRec(); else pauseRec();
   }
   function go(name) { if (location.hash.slice(1) === name) show(name); else location.hash = name; }
@@ -301,8 +322,42 @@ h1 { font-family: var(--font-display); font-size: 26px; line-height: 1.2; font-w
     h = cards[1].querySelectorAll('h3, p'); h[0].textContent = c.n[2]; h[1].textContent = c.n[3];
     $('#review-btn').textContent = p === 'dana' ? 'Review it' : 'See what Dana filled in';
     $('#s-morning .card.dark h3').textContent = c.fb;
+    $('#narr').hidden = p !== 'rose';
+    stopNarr();
     toast(p === 'dana' ? 'Viewing as Dana (caregiver)' : 'Viewing as Rose (patient)');
   }
+
+  /* ---- Rose's narration ---- */
+  var narrText = 'Good morning, Rose. Dana is taking you to see Dr. Patel on Thursday at two. Your questions are already written down. Your Medicaid form is almost done, and Dana is helping with it. Today, just take your pills and rest. How are you feeling?';
+  var narrWords = narrText.split(' '), narrTimer = null, narrI = 0;
+  function renderCap() {
+    $('#cap').innerHTML = narrWords.map(function (w, i) { return '<span' + (i < narrI ? ' class="on"' : '') + '>' + w + ' </span>'; }).join('');
+    $('#bar').style.width = (narrI / narrWords.length * 100) + '%';
+  }
+  function stopNarr() {
+    if (narrTimer) { clearInterval(narrTimer); narrTimer = null; }
+    try { if (window.speechSynthesis) speechSynthesis.cancel(); } catch (e) {}
+    narrI = 0; renderCap();
+    $('#ic-play').hidden = false; $('#ic-pause').hidden = true;
+    $('#play').setAttribute('aria-label', 'Play morning message');
+  }
+  function playNarr() {
+    if (narrTimer) { stopNarr(); return; }
+    $('#ic-play').hidden = true; $('#ic-pause').hidden = false;
+    $('#play').setAttribute('aria-label', 'Stop morning message');
+    try {
+      if (window.speechSynthesis) {
+        var u = new SpeechSynthesisUtterance(narrText); u.rate = 0.92;
+        speechSynthesis.cancel(); speechSynthesis.speak(u);
+      }
+    } catch (e) {}
+    narrTimer = setInterval(function () {
+      narrI++; renderCap();
+      if (narrI >= narrWords.length) { clearInterval(narrTimer); narrTimer = null; setTimeout(stopNarr, 600); }
+    }, 480);
+  }
+  $('#play').addEventListener('click', playNarr);
+  renderCap();
   $('#p-dana').addEventListener('click', function () { setPersona('dana'); });
   $('#p-rose').addEventListener('click', function () { setPersona('rose'); });
 
