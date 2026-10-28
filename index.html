@@ -1,0 +1,406 @@
+<title>Dessa Pathway</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Domine:wght@400..700&family=Nunito+Sans:wght@400..800&display=swap">
+<style>
+/* Layout: one phone-width app column (390 design width). Header, scrolling screen, bottom tab bar. On desktop it sits in a phone frame. */
+:root {
+  --bg: #FAF6EF;
+  --surface: #FFFDF8;
+  --ink: #1F3A44;
+  --muted: #4A5D63;
+  --faint: #7A8A8F;
+  --line: #E3DDD0;
+  --mint: #E7EFEC;
+  --mist: #BFD3D6;
+  --accent: #D9693A;
+  --accent-soft: #F7E3D6;
+  --amber: #F2A65A;
+  --ok: #3F7D5B;
+  --on-ink: #FAF6EF;
+  --stage: #E9E3D6;
+  --font-display: 'Domine', Georgia, serif;
+  --font-body: 'Nunito Sans', Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14262D; --surface: #1C333B; --ink: #F1ECE2; --muted: #B7C8CB; --faint: #8CA1A5;
+    --line: #2C474F; --mint: #213D45; --mist: #3A5860; --accent: #F08A5A; --accent-soft: #3A2B27;
+    --amber: #F2A65A; --ok: #7CC29B; --on-ink: #14262D; --stage: #0D1A1F; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14262D; --surface: #1C333B; --ink: #F1ECE2; --muted: #B7C8CB; --faint: #8CA1A5;
+  --line: #2C474F; --mint: #213D45; --mist: #3A5860; --accent: #F08A5A; --accent-soft: #3A2B27;
+  --amber: #F2A65A; --ok: #7CC29B; --on-ink: #14262D; --stage: #0D1A1F; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  background: var(--stage); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; padding: 0; }
+button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3, p { margin: 0; }
+.app {
+  height: 100%; max-width: 430px; margin: 0 auto; background: var(--bg);
+  display: flex; flex-direction: column; overflow: hidden; position: relative;
+}
+@media (min-width: 640px) {
+  body { padding-block: 24px; }
+  .app { height: min(860px, 100%); border-radius: 44px; border: 10px solid var(--ink); box-shadow: 0 24px 60px rgba(0,0,0,.25); }
+}
+@media (max-width: 639px) { body { background: var(--bg); } }
+
+/* header */
+.top { padding: 16px 20px 12px; display: flex; align-items: center; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.avatar { width: 36px; height: 36px; flex: none; border-radius: 50%; background: var(--ink); display: grid; place-items: center; }
+.brand b { font-family: var(--font-display); font-size: 22px; letter-spacing: .2px; }
+.who { display: flex; background: var(--mint); border-radius: 999px; padding: 3px; }
+.who button { padding: 6px 12px; border-radius: 999px; font-size: 14px; font-weight: 700; color: var(--muted); min-height: 32px; }
+.who button[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); }
+
+/* screens */
+main { flex: 1; min-height: 0; overflow-y: auto; padding: 4px 20px 24px; display: flex; flex-direction: column; gap: 16px; }
+.screen[hidden] { display: none !important; }
+.screen { display: flex; flex-direction: column; gap: 16px; }
+.eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-size: 26px; line-height: 1.2; font-weight: 700; text-wrap: balance; }
+.sub { color: var(--muted); font-size: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.card h3 { font-size: 17px; font-weight: 800; }
+.card p { color: var(--muted); font-size: 15px; }
+.card.dark { background: var(--ink); border-color: var(--ink); }
+.card.dark h3 { color: var(--on-ink); }
+.card.dark p { color: var(--mist); }
+:root[data-theme="dark"] .card.dark, :root:not([data-theme="light"]) .card.dark { }
+.row { display: flex; align-items: center; gap: 12px; }
+.row > .grow { flex: 1; min-width: 0; }
+.chip { display: inline-block; font-size: 12px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.chip.ok { background: var(--mint); color: var(--ok); }
+.btn { background: var(--accent); color: #fff; font-weight: 800; border-radius: 999px; padding: 10px 18px; min-height: 44px; align-self: flex-start; }
+.btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--ink); }
+.btn.dark { background: var(--ink); color: var(--on-ink); }
+.btn[disabled] { opacity: .6; }
+.num { font-family: var(--font-display); font-weight: 700; font-size: 20px; width: 34px; height: 34px; border-radius: 50%; background: var(--mint); display: grid; place-items: center; flex: none; }
+.more { max-height: 0; overflow: hidden; transition: max-height .25s ease; }
+.more.open { max-height: 220px; }
+.more p { padding-top: 4px; }
+.scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.scale button { min-height: 48px; border-radius: 14px; border: 2px solid var(--line); background: var(--bg); font-weight: 800; font-size: 18px; }
+.scale button[aria-pressed="true"] { background: var(--ink); color: var(--on-ink); border-color: var(--ink); }
+.bubble { background: var(--mint); border-radius: 18px 18px 18px 6px; padding: 12px 14px; font-size: 15px; color: var(--ink); max-width: 92%; }
+.bubble.me { align-self: flex-end; background: var(--ink); color: var(--on-ink); border-radius: 18px 18px 6px 18px; }
+.fine { font-size: 12px; color: var(--faint); text-align: center; }
+
+/* prep */
+.visit { display: flex; gap: 14px; align-items: center; }
+.date { width: 56px; flex: none; text-align: center; background: var(--ink); color: var(--on-ink); border-radius: 14px; padding: 8px 0; }
+.date b { display: block; font-family: var(--font-display); font-size: 24px; line-height: 1; }
+.date span { font-size: 12px; font-weight: 800; letter-spacing: 1px; }
+.check { display: flex; gap: 12px; align-items: center; width: 100%; text-align: left; padding: 10px 0; min-height: 48px; border-top: 1px solid var(--line); color: var(--ink); font-size: 16px; }
+.check:first-of-type { border-top: 0; }
+.box { width: 26px; height: 26px; flex: none; border-radius: 8px; border: 2px solid var(--mist); display: grid; place-items: center; }
+.check[aria-pressed="true"] .box { background: var(--ok); border-color: var(--ok); }
+.check[aria-pressed="true"] span.t { color: var(--faint); text-decoration: line-through; }
+.check svg { display: none; }
+.check[aria-pressed="true"] svg { display: block; }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.facts div { background: var(--bg); border-radius: 12px; padding: 10px 12px; }
+.facts small { display: block; font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--faint); }
+.facts span { font-size: 15px; font-weight: 700; }
+
+/* listen */
+.rec { display: flex; align-items: center; gap: 12px; }
+.pulse { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); flex: none; }
+.rec.on .pulse { animation: pulse 1.4s ease-out infinite; }
+.rec:not(.on) .pulse { background: var(--faint); }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(217,105,58,.55); } 100% { box-shadow: 0 0 0 14px rgba(217,105,58,0); } }
+.time { font-variant-numeric: tabular-nums; font-weight: 800; font-size: 20px; }
+.wave { display: flex; align-items: center; gap: 3px; height: 28px; margin-left: auto; }
+.wave i { width: 3px; border-radius: 2px; background: var(--accent); height: 8px; }
+.rec.on .wave i { animation: bar 1s ease-in-out infinite; }
+.rec:not(.on) .wave i { background: var(--mist); }
+.wave i:nth-child(2n) { animation-delay: .2s; } .wave i:nth-child(3n) { animation-delay: .45s; } .wave i:nth-child(5n) { animation-delay: .7s; }
+@keyframes bar { 0%,100% { height: 6px; } 50% { height: 26px; } }
+.line { display: flex; flex-direction: column; gap: 4px; animation: in .3s ease; }
+@keyframes in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.line small { font-size: 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--faint); }
+.line p { font-size: 16px; color: var(--ink); }
+.jargon { border-bottom: 2px solid var(--accent); font-weight: 800; background: var(--accent-soft); padding: 0 3px; border-radius: 4px; }
+.explain { background: var(--ink); color: var(--on-ink); border-radius: 14px; padding: 10px 14px; font-size: 15px; margin-top: 2px; }
+.explain small { color: var(--amber); display: block; }
+
+/* tab bar */
+.tabs { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--surface); border-top: 1px solid var(--line); padding: 6px 8px 8px; }
+.tabs button { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 4px; min-height: 56px; font-size: 12px; font-weight: 800; color: var(--faint); border-radius: 14px; }
+.tabs button[aria-selected="true"] { color: var(--ink); }
+.tabs button[aria-selected="true"] .ico { background: var(--accent-soft); color: var(--accent); }
+.ico { width: 44px; height: 28px; border-radius: 14px; display: grid; place-items: center; }
+.toast { position: absolute; left: 20px; right: 20px; bottom: 84px; background: var(--ink); color: var(--on-ink); padding: 12px 16px; border-radius: 14px; font-weight: 700; font-size: 15px; opacity: 0; transform: translateY(8px); transition: .25s; pointer-events: none; }
+.toast.show { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <div class="avatar" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 19c4 0 3-7 8-7s3-7 8-7" stroke="#FAF6EF" stroke-width="2.4" stroke-linecap="round"/><circle cx="19.5" cy="5" r="2.2" fill="#F2A65A"/></svg>
+      </div>
+      <b>Dessa</b>
+    </div>
+    <div class="who" role="group" aria-label="Viewing as">
+      <button id="p-dana" aria-pressed="true">Dana</button>
+      <button id="p-rose" aria-pressed="false">Rose</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- MORNING -->
+    <section class="screen" id="s-morning" aria-labelledby="h-morning">
+      <div>
+        <p class="eyebrow" id="m-eyebrow">Tue, Oct 28 · 7:30 AM</p>
+        <h1 id="h-morning">Good morning, Dana. Two things for your mom today.</h1>
+      </div>
+      <div id="m-new"></div>
+      <article class="card">
+        <div class="row"><span class="num">1</span><div class="grow"><h3>Heart doctor, Thursday 2:00</h3><p>I added her new water pill to the questions list.</p></div></div>
+        <div class="row"><button class="btn dark" data-go="prep">See visit prep</button></div>
+      </article>
+      <article class="card">
+        <div class="row"><span class="num">2</span><div class="grow"><h3>Medicaid renewal, due Nov 30</h3><p>I filled in what I could from her records.</p></div></div>
+        <button class="btn ghost" id="review-btn" aria-expanded="false">Review it</button>
+        <div class="more" id="review-more"><p>Her income and address match last year's form. I left 2 questions for you: household size and any new bank accounts. It takes about 4 minutes.</p></div>
+      </article>
+      <article class="card dark">
+        <h3>How is she feeling today?</h3>
+        <div class="scale" id="scale" role="group" aria-label="Feeling, 1 to 5">
+          <button aria-pressed="false">1</button><button aria-pressed="false">2</button><button aria-pressed="false">3</button><button aria-pressed="false">4</button><button aria-pressed="false">5</button>
+        </div>
+        <div id="reply"></div>
+      </article>
+      <article class="card">
+        <span class="chip">What I noticed</span>
+        <h3>Her iron looks low</h3>
+        <p>Her last 3 blood tests dipped, and she's been sleeping about 1 hour less. Her pharmacist may suggest a supplement. I'll flag it Thursday.</p>
+        <div class="row"><div class="grow"><p>Next check-ins: <b>noon</b>, <b>after dinner</b>, <b>bedtime</b></p></div></div>
+      </article>
+      <p class="fine">Sample data. Not medical advice.</p>
+    </section>
+
+    <!-- PREP -->
+    <section class="screen" id="s-prep" aria-labelledby="h-prep" hidden>
+      <div>
+        <p class="eyebrow">Before the visit</p>
+        <h1 id="h-prep">Everything you need for Thursday</h1>
+      </div>
+      <article class="card">
+        <div class="visit">
+          <div class="date"><span>THU</span><b>30</b></div>
+          <div class="grow"><h3>Cardiology follow-up</h3><p>2:00 PM · Dr. Patel · Valley Heart Clinic</p></div>
+        </div>
+        <div class="row"><span class="chip">Leave by 1:20</span><span class="chip ok">Ride booked</span></div>
+      </article>
+      <article class="card">
+        <h3>Ask the doctor</h3>
+        <button class="check" aria-pressed="false"><span class="box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">Is the new water pill safe with her other meds?</span></button>
+        <button class="check" aria-pressed="false"><span class="box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">Why has she been so tired since September?</span></button>
+        <button class="check" aria-pressed="false"><span class="box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">What should we do if her ankles swell again?</span></button>
+      </article>
+      <article class="card">
+        <h3>Bring with you</h3>
+        <button class="check" aria-pressed="true"><span class="box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">Insurance and Medicaid cards</span></button>
+        <button class="check" aria-pressed="false"><span class="box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">All pill bottles, including vitamins</span></button>
+        <button class="check" aria-pressed="false"><span class="box"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.5 4.5L19 7.5" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">Her 2-week weight and blood pressure log</span></button>
+      </article>
+      <article class="card">
+        <h3>Her story in short</h3>
+        <div class="facts">
+          <div><small>Heart</small><span>Heart failure, stable</span></div>
+          <div><small>Also has</small><span>Type 2 diabetes</span></div>
+          <div><small>Sleep</small><span>5.8 hrs, down 1 hr</span></div>
+          <div><small>Habits</small><span>Quit smoking 2019</span></div>
+        </div>
+      </article>
+      <article class="card dark">
+        <h3>On visit day</h3>
+        <p>Dessa will listen to the visit from your phone and turn it into plain words.</p>
+        <button class="btn" data-go="listen">Start listening</button>
+      </article>
+      <p class="fine">Sample data. Not medical advice.</p>
+    </section>
+
+    <!-- LISTEN -->
+    <section class="screen" id="s-listen" aria-labelledby="h-listen" hidden>
+      <div>
+        <p class="eyebrow">At the visit</p>
+        <h1 id="h-listen">Dessa is listening, so you can too</h1>
+      </div>
+      <div class="rec on" id="rec">
+        <span class="pulse"></span><span class="time" id="clock">0:00</span><span class="sub" id="rec-state">Recording</span>
+        <div class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <p class="sub">Tap a highlighted word for a plain-language explanation.</p>
+      <div id="lines" style="display:flex;flex-direction:column;gap:14px" aria-live="polite"></div>
+      <div id="summary"></div>
+      <button class="btn dark" id="stop">End visit</button>
+    </section>
+  </main>
+
+  <nav class="tabs" role="tablist" aria-label="Dessa">
+    <button role="tab" id="t-morning" aria-selected="true" data-go="morning"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="4"/><path d="M12 3v3M4.5 7.5l2 2M19.5 7.5l-2 2M2 17h2M20 17h2"/></svg></span>Morning</button>
+    <button role="tab" id="t-prep" aria-selected="false" data-go="prep"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="17" rx="3"/><path d="M8 11l2.5 2.5L16 8M8 17h8"/></svg></span>Visit prep</button>
+    <button role="tab" id="t-listen" aria-selected="false" data-go="listen"><span class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></span>Listen</button>
+  </nav>
+  <div class="toast" id="toast" role="status"></div>
+</div>
+
+<script>
+(function () {
+  var $ = function (s) { return document.querySelector(s); };
+  var $$ = function (s) { return Array.prototype.slice.call(document.querySelectorAll(s)); };
+  var screens = ['morning', 'prep', 'listen'];
+  var persona = 'dana';
+  var kept = false;
+
+  /* ---- navigation (hash routed) ---- */
+  function show(name) {
+    if (screens.indexOf(name) < 0) name = 'morning';
+    screens.forEach(function (s) {
+      $('#s-' + s).hidden = s !== name;
+      $('#t-' + s).setAttribute('aria-selected', s === name ? 'true' : 'false');
+    });
+    $('#main').scrollTop = 0;
+    if (name === 'listen') startRec(); else pauseRec();
+  }
+  function go(name) { if (location.hash.slice(1) === name) show(name); else location.hash = name; }
+  window.addEventListener('hashchange', function () { show(location.hash.slice(1)); });
+  $$('[data-go]').forEach(function (b) { b.addEventListener('click', function () { go(b.getAttribute('data-go')); }); });
+
+  function toast(msg) {
+    var t = $('#toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toast.id); toast.id = setTimeout(function () { t.classList.remove('show'); }, 2200);
+  }
+
+  /* ---- persona ---- */
+  var copy = {
+    dana: { h: 'Good morning, Dana. Two things for your mom today.', n: ['Heart doctor, Thursday 2:00', 'I added her new water pill to the questions list.', 'Medicaid renewal, due Nov 30', 'I filled in what I could from her records.'], fb: 'How is she feeling today?' },
+    rose: { h: 'Good morning, Rose. Two things for you today.', n: ['Your heart doctor, Thursday 2:00', 'Dana is taking you. We wrote down your questions.', 'Your Medicaid renewal, due Nov 30', 'Dana is helping fill it out. Nothing for you to do yet.'], fb: 'How are you feeling today?' }
+  };
+  function setPersona(p) {
+    persona = p;
+    $('#p-dana').setAttribute('aria-pressed', p === 'dana');
+    $('#p-rose').setAttribute('aria-pressed', p === 'rose');
+    var c = copy[p];
+    $('#h-morning').textContent = c.h;
+    var cards = $$('#s-morning > article.card');
+    var h = cards[0].querySelectorAll('h3, p'); h[0].textContent = c.n[0]; h[1].textContent = c.n[1];
+    h = cards[1].querySelectorAll('h3, p'); h[0].textContent = c.n[2]; h[1].textContent = c.n[3];
+    $('#review-btn').textContent = p === 'dana' ? 'Review it' : 'See what Dana filled in';
+    $('#s-morning .card.dark h3').textContent = c.fb;
+    toast(p === 'dana' ? 'Viewing as Dana (caregiver)' : 'Viewing as Rose (patient)');
+  }
+  $('#p-dana').addEventListener('click', function () { setPersona('dana'); });
+  $('#p-rose').addEventListener('click', function () { setPersona('rose'); });
+
+  /* ---- morning ---- */
+  $('#review-btn').addEventListener('click', function () {
+    var open = $('#review-more').classList.toggle('open');
+    this.setAttribute('aria-expanded', open);
+  });
+  var replies = {
+    1: "I'm sorry, that sounds rough. Is she in pain, or just worn out? I'll tell Dr. Patel.",
+    2: "Thanks for telling me. Is she more tired than yesterday? I'll keep an eye on it.",
+    3: "Okay, a so-so day. I'll check in again at noon.",
+    4: "Good to hear. Nothing else needed from you this morning.",
+    5: "Wonderful. I'll let you both get on with the day."
+  };
+  $$('#scale button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      $$('#scale button').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+      b.setAttribute('aria-pressed', 'true');
+      var n = b.textContent;
+      $('#reply').innerHTML = '<div class="bubble">' + replies[n] + '</div>';
+    });
+  });
+
+  /* ---- prep checklists ---- */
+  $$('.check').forEach(function (b) {
+    b.addEventListener('click', function () { b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') !== 'true'); });
+  });
+
+  /* ---- listening ---- */
+  var script = [
+    ['Dr. Patel', 'Her <button class="jargon" data-k="ef">ejection fraction</button> is up to 45 percent. That is a good sign.'],
+    ['Dana', 'That’s better than last time?'],
+    ['Dr. Patel', 'Yes. I’d still like to start a low-dose <button class="jargon" data-k="diu">diuretic</button> to cut down the <button class="jargon" data-k="ede">edema</button> in her ankles.'],
+    ['Dana', 'Does she need to watch her salt?'],
+    ['Dr. Patel', 'Yes, under 2 grams of sodium a day. Weigh her every morning.'],
+    ['Dr. Patel', 'We’ll repeat the <button class="jargon" data-k="bmp">BMP</button> in two weeks to check her potassium.']
+  ];
+  var gloss = {
+    ef: ['Ejection fraction', 'How much blood her heart pushes out with each beat. 45% is below typical, but it is improving.'],
+    diu: ['Diuretic', 'A water pill. It helps her body get rid of extra fluid so her heart works less hard.'],
+    ede: ['Edema', 'Swelling from extra fluid. For Rose it shows up in her ankles.'],
+    bmp: ['BMP', 'A basic blood test. It checks her kidneys and potassium, which the water pill can change.']
+  };
+  var shown = 0, secs = 0, timer = null, ended = false;
+  function addLine() {
+    if (shown >= script.length) { endVisit(true); return; }
+    var l = script[shown++];
+    var el = document.createElement('div'); el.className = 'line';
+    el.innerHTML = '<small>' + l[0] + '</small><p>' + l[1] + '</p>';
+    $('#lines').appendChild(el);
+    $('#main').scrollTop = $('#main').scrollHeight;
+  }
+  $('#lines').addEventListener('click', function (e) {
+    var j = e.target.closest('.jargon'); if (!j) return;
+    var p = j.closest('.line'), old = p.querySelector('.explain');
+    if (old) { old.remove(); return; }
+    var g = gloss[j.getAttribute('data-k')];
+    var d = document.createElement('div'); d.className = 'explain';
+    d.innerHTML = '<small>Dessa explains · ' + g[0] + '</small>' + g[1];
+    p.appendChild(d);
+  });
+  function tick() {
+    secs++;
+    $('#clock').textContent = Math.floor(secs / 60) + ':' + String(secs % 60).padStart(2, '0');
+    if (secs % 3 === 0) addLine();
+  }
+  function startRec() {
+    if (ended) return;
+    $('#rec').classList.add('on'); $('#rec-state').textContent = 'Recording';
+    if (shown === 0) { addLine(); addLine(); secs = 14; $('#clock').textContent = '0:14'; }
+    if (!timer) timer = setInterval(tick, 1000);
+  }
+  function pauseRec() {
+    if (timer) { clearInterval(timer); timer = null; }
+    if (!ended) { $('#rec').classList.remove('on'); $('#rec-state').textContent = 'Paused'; }
+  }
+  function endVisit(auto) {
+    if (ended) return;
+    ended = true; clearInterval(timer); timer = null;
+    $('#rec').classList.remove('on'); $('#rec-state').textContent = 'Saved';
+    while (shown < script.length) addLine();
+    $('#stop').hidden = true;
+    $('#summary').innerHTML =
+      '<article class="card"><span class="chip ok">Dessa heard</span><h3>What changed today</h3>' +
+      '<div class="row"><span class="num">1</span><p class="grow">Start the new water pill as the doctor directed.</p></div>' +
+      '<div class="row"><span class="num">2</span><p class="grow">Keep salt under 2 grams a day and weigh her each morning.</p></div>' +
+      '<div class="row"><span class="num">3</span><p class="grow">Blood test in two weeks. I will remind you.</p></div>' +
+      '<button class="btn" id="keep">Add to morning list</button></article>';
+    $('#keep').addEventListener('click', function () {
+      if (kept) return; kept = true; this.textContent = 'Added'; this.disabled = true;
+      $('#m-new').innerHTML = '<article class="card" style="border-color:var(--ok)"><span class="chip ok">New from the visit</span><h3>Start her water pill, weigh her each morning</h3><p>Blood test in two weeks. Salt under 2 grams a day.</p></article>';
+      toast('Added to Morning');
+    });
+    $('#main').scrollTop = $('#main').scrollHeight;
+  }
+  $('#stop').addEventListener('click', function () { endVisit(false); });
+
+  show(location.hash.slice(1));
+})();
+</script>
