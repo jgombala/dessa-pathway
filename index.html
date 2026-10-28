@@ -345,17 +345,31 @@ h1 { font-family: var(--font-display); font-size: 26px; line-height: 1.2; font-w
     if (narrTimer) { stopNarr(); return; }
     $('#ic-play').hidden = true; $('#ic-pause').hidden = false;
     $('#play').setAttribute('aria-label', 'Stop morning message');
+    var step = 480;
     try {
       if (window.speechSynthesis) {
-        var u = new SpeechSynthesisUtterance(narrText); u.rate = 0.92;
+        var u = new SpeechSynthesisUtterance(narrText); u.rate = 0.9; u.pitch = 1.02;
+        var v = pickVoice(); if (v) { u.voice = v; u.lang = v.lang; }
         speechSynthesis.cancel(); speechSynthesis.speak(u);
       }
     } catch (e) {}
     narrTimer = setInterval(function () {
       narrI++; renderCap();
       if (narrI >= narrWords.length) { clearInterval(narrTimer); narrTimer = null; setTimeout(stopNarr, 600); }
-    }, 480);
+    }, step);
   }
+  /* Prefer the most natural English voice the device offers (neural/"Natural"/Enhanced/Premium, then well-known good ones). */
+  function pickVoice() {
+    var vs = (window.speechSynthesis && speechSynthesis.getVoices()) || [];
+    var en = vs.filter(function (v) { return /^en(-|_)US/i.test(v.lang) || /^en/i.test(v.lang); });
+    var rank = [/natural|neural/i, /premium|enhanced/i, /samantha|ava|allison|aria|jenny|zoe/i, /google us english/i];
+    for (var i = 0; i < rank.length; i++) {
+      var hit = en.filter(function (v) { return rank[i].test(v.name); })[0];
+      if (hit) return hit;
+    }
+    return en[0] || null;
+  }
+  try { if (window.speechSynthesis) speechSynthesis.getVoices(); } catch (e) {}
   $('#play').addEventListener('click', playNarr);
   renderCap();
   $('#p-dana').addEventListener('click', function () { setPersona('dana'); });
